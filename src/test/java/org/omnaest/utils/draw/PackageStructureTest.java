@@ -13,6 +13,10 @@ import org.omnaest.utils.style.sourcetext.SourceGuard;
  * One {@code @Test} method per check, so a project opts out of one check by deleting one line. This class is
  * test-only structural-assertion infrastructure with no main-source counterpart, so it is exempt from the
  * test-mirror rule (P13) and legitimately sits at the context root.
+ * <p>
+ * Brought to the full 16-check enforced surface per plan-216, which deliberately excludes two documented
+ * measurement-only readings: {@code StyleProfile.internalPackagesAreAccessedOnlyFromTheirDirectParentPackage()}
+ * and {@code SourceGuard.noInternalReferencesFromOutsideTheirDirectParentPackage()}.
  */
 class PackageStructureTest
 {
@@ -72,6 +76,48 @@ class PackageStructureTest
     void noInternalTypeOnAPublicApiSurface()
     {
         PROFILE.noInternalTypeOnAPublicApiSurface()
+               .check(PROFILE.mainClasses());
+    }
+
+    @Test
+    void boundedContextsAreDiscovered()
+    {
+        PROFILE.boundedContextsAreDiscovered()
+               .check(PROFILE.mainClasses());
+    }
+
+    @Test
+    void noContextDependsOnAnAdapter()
+    {
+        PROFILE.noContextDependsOnAnAdapter()
+               .check(PROFILE.mainClasses());
+    }
+
+    @Test
+    void adapterWireTypesLiveInTheirChannelDomain()
+    {
+        PROFILE.adapterWireTypesLiveInTheirChannelDomain()
+               .check(PROFILE.mainClasses());
+    }
+
+    @Test
+    void sharedTypesAreUsedByAtLeastTwoContexts()
+    {
+        PROFILE.sharedTypesAreUsedByAtLeastTwoContexts()
+               .check(PROFILE.mainClasses());
+    }
+
+    @Test
+    void utilsPackagesDoNotReachIntoDomain()
+    {
+        PROFILE.utilsPackagesDoNotReachIntoDomain()
+               .check(PROFILE.mainClasses());
+    }
+
+    @Test
+    void utilsPackagesDoNotDuplicateCommonsTypes()
+    {
+        PROFILE.utilsPackagesDoNotDuplicateCommonsTypes()
                .check(PROFILE.mainClasses());
     }
 
