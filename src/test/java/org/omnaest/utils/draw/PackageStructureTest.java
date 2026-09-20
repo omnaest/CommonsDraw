@@ -3,6 +3,7 @@ package org.omnaest.utils.draw;
 import org.junit.jupiter.api.Test;
 import org.omnaest.utils.style.StyleProfile;
 import org.omnaest.utils.style.sourcetext.SourceGuard;
+import org.omnaest.utils.style.surface.CheckSurfaceGuard;
 
 /**
  * Mechanically enforces this workspace's Java package structure guideline (see
@@ -17,6 +18,11 @@ import org.omnaest.utils.style.sourcetext.SourceGuard;
  * Brought to the full 16-check enforced surface per plan-216, which deliberately excludes two documented
  * measurement-only readings: {@code StyleProfile.internalPackagesAreAccessedOnlyFromTheirDirectParentPackage()}
  * and {@code SourceGuard.noInternalReferencesFromOutsideTheirDirectParentPackage()}.
+ * <p>
+ * plan-225 Slice 2 adds {@link #everyEnforcedCheckIsCalled()}, which mechanically ratchets the enforced check
+ * surface itself: the surface can grow (as it did from 9 to 16), and this test reds the moment {@code
+ * StyleProfile} or {@code SourceGuard} gains a rule that this class does not yet call - closing the drift that
+ * previously let this project silently fall behind the full enforced surface for months.
  */
 class PackageStructureTest
 {
@@ -135,6 +141,13 @@ class PackageStructureTest
         SourceGuard.of()
                    .testsMirrorTheirSubjectPackage()
                    .verify();
+    }
+
+    @Test
+    void everyEnforcedCheckIsCalled()
+    {
+        CheckSurfaceGuard.of(PackageStructureTest.class)
+                         .verify();
     }
 
 }
